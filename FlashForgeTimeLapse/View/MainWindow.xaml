@@ -46,10 +46,25 @@
 
         <StackPanel Orientation="Horizontal" Grid.Row="4" HorizontalAlignment="Center">
             
-            <Button Content="Create output file" 
+            <Button Content="Create timelapse" 
                     Command="{Binding CreateOutputVideoCommand}"
                     Margin="10" Width="220"/>
+
+            <ComboBox Margin="10" Width="100" 
+                      SelectedValue="{Binding VideoCodecString, Mode=TwoWay}"
+                      SelectedValuePath="Content">
+                <ComboBoxItem Content="VP9" />
+                <ComboBoxItem Content="RAW"/>
+            </ComboBox>
             
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="5" HorizontalAlignment="Center">
+
+            <Button Content="Clear files" 
+                    Command="{Binding ClearFilesCommand}"
+                    Margin="10" Width="220"/>
+
         </StackPanel>
 
     </Grid>

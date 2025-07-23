@@ -55,6 +55,21 @@ namespace FlashForgeTimeLapse.ViewModel
             }
         }
 
+        private string _videoCodesString = "VP9";
+        public string VideoCodecString
+        {
+            get => _videoCodesString;
+            set
+            {
+                if (value != null && value != string.Empty &&
+                    value != _videoCodesString)
+                {
+                    _videoCodesString = value;
+                    OnPropertyChanged(nameof(VideoCodecString));
+                }
+            }
+        }
+
         public string TimeoutScreenshot
         {
             get => Properties.Settings.Default.TimeoutScreenshot.ToString();
@@ -108,6 +123,8 @@ namespace FlashForgeTimeLapse.ViewModel
         {
             IsStarting = false;
         });
+
+        public ICommand ClearFilesCommand => new RelayCommand(ClearFiles);
 
         #endregion Commands
 
@@ -202,9 +219,13 @@ namespace FlashForgeTimeLapse.ViewModel
                 return;
             }
 
+            string extension = VideoCodecString == "VP9" ? ".webm" : ".avi";
+
             using (var writer = new VideoFileWriter())
             {
-                writer.Open(Path.Combine(destFolder, "output.webm"), 640, 480, 25, VideoCodec.VP9);
+                VideoCodec videoCodec = VideoCodecString == "VP9" ? VideoCodec.VP9 : VideoCodec.Raw;
+
+                writer.Open(Path.Combine(destFolder, "output" + extension), 640, 480, 25, videoCodec);
 
                 foreach (string file in Directory.EnumerateFiles(imagesFolder, "*.png"))
                 {
@@ -216,7 +237,34 @@ namespace FlashForgeTimeLapse.ViewModel
                 writer.Close();
             }
 
-            _ = Process.Start("explorer.exe", $"/select,\"{Path.Combine(destFolder, "output.webm")}\"");
+            _ = Process.Start("explorer.exe", $"/select,\"{Path.Combine(destFolder, "output" + extension)}\"");
+        }
+
+        private void ClearFiles()
+        {
+            var Result = MessageBox.Show(
+                "Do you want to delete all saved image and video files?", "Do you want to delete?", 
+                MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if (Result == MessageBoxResult.Yes)
+            {
+                string destFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+                string imagesFolder = Path.Combine(destFolder, "Images");
+
+                if (Directory.Exists(imagesFolder))
+                {
+                    Directory.Delete(imagesFolder, true);
+                }
+
+                string fileWebm = Path.Combine(destFolder, "output.webm");
+                string fileAvi = Path.Combine(destFolder, "output.avi");
+
+                if (File.Exists(fileWebm)) File.Delete(fileWebm);
+                if (File.Exists(fileAvi)) File.Delete(fileAvi);
+            }
+
+           
         }
 
         #endregion Methods
