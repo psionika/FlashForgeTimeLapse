@@ -52,3 +52,57 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+
+# Visual Studio 2015/2017 cache/options directory
+.vs/
+
+# Cache folder for files edited during debugging
+enc_temp_folder/
+
+# WinMerge source conflict files
+*.orig
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Code analisys file
+*.lastcodeanalysissucceeded
+
+
+# Files built by Visual Studio
+*_i.c
+*_p.c
+*_i.h
+*.ilk
+*.meta
+*.obj
+*.iobj
+*.pch
+*.pdb
+*.ipdb
+*.pgc
+*.pgd
+*.rsp
+*.sbr
+*.tlb
+*.tli
+*.tlh
+*.tmp
+*.tmp_proj
+*.log
+*.vspscc
+*.vssscc
+.builds
+*.pidb
+*.svclog
+*.scc
+
+
+# Visual Studio profiler
+*.psess
+*.vsp
+*.vspx
+*.sap

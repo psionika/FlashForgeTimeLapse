@@ -1,0 +1,16 @@
+﻿<Application x:Class="FlashForgeTimeLapse.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:FlashForgeTimeLapse"
+             xmlns:converters="clr-namespace:FlashForgeTimeLapse.Converters"
+             xmlns:vm="clr-namespace:FlashForgeTimeLapse.ViewModel"
+             StartupUri="View\MainWindow.xaml">
+    <Application.Resources>
+
+        <ResourceDictionary>
+            <vm:ViewModelLocator x:Key="Locator" />
+            <converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+        </ResourceDictionary>
+
+    </Application.Resources>
+</Application>
