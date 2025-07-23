@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using FlashForgeTimeLapse.Helpers;
 using FlashForgeTimeLapse.MJpegWrapper;
 using FlashForgeTimeLapse.ThreadExecuters;
 using System;
@@ -161,16 +162,13 @@ namespace FlashForgeTimeLapse.ViewModel
 
                                         if (duration.TotalSeconds > Properties.Settings.Default.TimeoutScreenshot)
                                         {
-
-                                            string destFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-
                                             string filename = DateTime.Now.Ticks.ToString() + ".png";
 
-                                            string destinationPath = Path.Combine(destFolder, "Images", filename);
+                                            string destinationPath = Path.Combine(AppFolders.Images, filename);
 
-                                            if (!Directory.Exists(Path.Combine(destFolder, "Images")))
+                                            if (!Directory.Exists(AppFolders.Images))
                                             {
-                                                Directory.CreateDirectory(Path.Combine(destFolder, "Images"));
+                                                Directory.CreateDirectory(AppFolders.Images);
                                             }
 
                                             using (var fileStream = new FileStream(destinationPath, FileMode.Create))
@@ -209,11 +207,7 @@ namespace FlashForgeTimeLapse.ViewModel
 
         private void CreateOutputVideo()
         {
-            string destFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-
-            string imagesFolder = Path.Combine(destFolder, "Images");
-
-            if (!Directory.Exists(imagesFolder))
+            if (!Directory.Exists(AppFolders.Images))
             {
                 MessageBox.Show("Images folder not found!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
@@ -225,9 +219,9 @@ namespace FlashForgeTimeLapse.ViewModel
             {
                 VideoCodec videoCodec = VideoCodecString == "VP9" ? VideoCodec.VP9 : VideoCodec.Raw;
 
-                writer.Open(Path.Combine(destFolder, "output" + extension), 640, 480, 25, videoCodec);
+                writer.Open(Path.Combine(AppFolders.Exe, "output" + extension), 640, 480, 25, videoCodec);
 
-                foreach (string file in Directory.EnumerateFiles(imagesFolder, "*.png"))
+                foreach (string file in Directory.EnumerateFiles(AppFolders.Images, "*.png"))
                 {
                     using (var img = (Bitmap)Image.FromFile(file))
                     {
@@ -237,7 +231,7 @@ namespace FlashForgeTimeLapse.ViewModel
                 writer.Close();
             }
 
-            _ = Process.Start("explorer.exe", $"/select,\"{Path.Combine(destFolder, "output" + extension)}\"");
+            _ = Process.Start("explorer.exe", $"/select,\"{Path.Combine(AppFolders.Exe, "output" + extension)}\"");
         }
 
         private void ClearFiles()
@@ -248,23 +242,17 @@ namespace FlashForgeTimeLapse.ViewModel
 
             if (Result == MessageBoxResult.Yes)
             {
-                string destFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-
-                string imagesFolder = Path.Combine(destFolder, "Images");
-
-                if (Directory.Exists(imagesFolder))
+                if (Directory.Exists(AppFolders.Images))
                 {
-                    Directory.Delete(imagesFolder, true);
+                    Directory.Delete(AppFolders.Images, true);
                 }
 
-                string fileWebm = Path.Combine(destFolder, "output.webm");
-                string fileAvi = Path.Combine(destFolder, "output.avi");
+                string fileWebm = Path.Combine(AppFolders.Exe, "output.webm");
+                string fileAvi = Path.Combine(AppFolders.Exe, "output.avi");
 
                 if (File.Exists(fileWebm)) File.Delete(fileWebm);
                 if (File.Exists(fileAvi)) File.Delete(fileAvi);
             }
-
-           
         }
 
         #endregion Methods

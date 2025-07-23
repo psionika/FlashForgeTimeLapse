@@ -57,6 +57,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Converters\InverseBooleanConverter.cs" />
+    <Compile Include="Helpers\AppFolders.cs" />
     <Compile Include="MJpegWrapper\SimpleMJPEGDecoder.cs" />
     <Compile Include="ThreadExecuters\Executers.cs" />
     <Compile Include="ThreadExecuters\IUiThreadExecutor.cs" />
