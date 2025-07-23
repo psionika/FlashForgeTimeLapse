@@ -10,6 +10,7 @@
         <ResourceDictionary>
             <vm:ViewModelLocator x:Key="Locator" />
             <converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+            <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         </ResourceDictionary>
 
     </Application.Resources>

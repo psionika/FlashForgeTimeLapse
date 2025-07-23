@@ -67,5 +67,19 @@
 
         </StackPanel>
 
+        <StackPanel x:Name="loadingPanel"
+                    Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}"
+                    Background="Gray"
+                    Opacity="0.7"
+                    Grid.Row="0" 
+                    Grid.RowSpan="8">
+
+            <TextBlock Text="Please wait... Generating video..."
+                       HorizontalAlignment="Center"
+                       Margin="10 250"
+                       FontSize="30"/>
+            
+        </StackPanel>
+
     </Grid>
 </Window>

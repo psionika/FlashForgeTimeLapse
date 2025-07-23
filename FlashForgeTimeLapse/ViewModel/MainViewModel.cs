@@ -109,11 +109,33 @@ namespace FlashForgeTimeLapse.ViewModel
             }
         }
 
+        private bool _isLoading = false;
+        public bool IsLoading
+        {
+            get => _isLoading;
+            set
+            {
+                if (_isLoading != value)
+                {
+                    _isLoading = value;
+                    OnPropertyChanged(nameof(IsLoading));
+                }
+            }
+        }
+
         #endregion Properties
 
         #region Commands
 
-        public ICommand CreateOutputVideoCommand => new RelayCommand(CreateOutputVideo);
+        public ICommand CreateOutputVideoCommand => new RelayCommand(() =>
+        {
+            IsLoading = true;
+            Thread thread = new Thread(CreateOutputVideo)
+            {
+                IsBackground = true
+            };
+            thread.Start();
+        });
 
         public ICommand StartCommand => new RelayCommand(() =>
         {
@@ -213,25 +235,38 @@ namespace FlashForgeTimeLapse.ViewModel
                 return;
             }
 
-            string extension = VideoCodecString == "VP9" ? ".webm" : ".avi";
-
-            using (var writer = new VideoFileWriter())
+            try
             {
-                VideoCodec videoCodec = VideoCodecString == "VP9" ? VideoCodec.VP9 : VideoCodec.Raw;
+                IsLoading = true;
 
-                writer.Open(Path.Combine(AppFolders.Exe, "output" + extension), 640, 480, 25, videoCodec);
+                string extension = VideoCodecString == "VP9" ? ".webm" : ".avi";
 
-                foreach (string file in Directory.EnumerateFiles(AppFolders.Images, "*.png"))
+                using (var writer = new VideoFileWriter())
                 {
-                    using (var img = (Bitmap)Image.FromFile(file))
-                    {
-                        writer.WriteVideoFrame(img);
-                    }
-                }
-                writer.Close();
-            }
+                    VideoCodec videoCodec = VideoCodecString == "VP9" ? VideoCodec.VP9 : VideoCodec.Raw;
 
-            _ = Process.Start("explorer.exe", $"/select,\"{Path.Combine(AppFolders.Exe, "output" + extension)}\"");
+                    writer.Open(Path.Combine(AppFolders.Exe, "output" + extension), 640, 480, 25, videoCodec);
+
+                    foreach (string file in Directory.EnumerateFiles(AppFolders.Images, "*.png"))
+                    {
+                        using (var img = (Bitmap)Image.FromFile(file))
+                        {
+                            writer.WriteVideoFrame(img);
+                        }
+                    }
+                    writer.Close();
+                }
+
+                _ = Process.Start("explorer.exe", $"/select,\"{Path.Combine(AppFolders.Exe, "output" + extension)}\"");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
+            finally
+            {
+                IsLoading = false;
+            }
         }
 
         private void ClearFiles()
