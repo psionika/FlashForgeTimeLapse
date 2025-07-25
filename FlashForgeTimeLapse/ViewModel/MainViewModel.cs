@@ -244,14 +244,14 @@ namespace FlashForgeTimeLapse.ViewModel
 
         private void CreateOutputVideo()
         {
-            if (!Directory.Exists(AppFolders.Images))
-            {
-                MessageBox.Show("Images folder not found!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
             try
             {
+                if (!Directory.Exists(AppFolders.Images))
+                {
+                    MessageBox.Show("Images folder not found!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
                 IsLoading = true;
 
                 string extension = VideoCodecString == "VP9" ? ".webm" : ".avi";
