@@ -44,8 +44,13 @@
             <TextBox Text="{Binding TimeoutScreenshot}"
                      IsEnabled="{Binding IsStarting, Converter={StaticResource InverseBooleanConverter}}"
                      VerticalContentAlignment="Center"
-                     Margin="10" Width="395" />
-            
+                     Margin="10 10 0 10" Width="315" />
+
+            <Button Command="{Binding TimeoutScreenshotUp}" Content="▲" Width="40" Margin="0 10 0 10"/>
+
+            <Button Command="{Binding TimeoutScreenshotDown}" Content="▼" Width="40" Margin="0 10 0 10"/>
+
+
             <TextBlock Text="seconds"
                        Margin="10" VerticalAlignment="Center"/>
             
@@ -70,18 +75,38 @@
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" Grid.Row="4" HorizontalAlignment="Center">
-            
+
+            <TextBlock Text="Codec:" 
+                       Margin="10"
+                       VerticalAlignment="Center"/>
+
+            <ComboBox Margin="10" Width="90" 
+                      SelectedValue="{Binding VideoCodecString, Mode=TwoWay}"
+                      SelectedValuePath="Content"
+                      IsReadOnly="True">
+                <ComboBoxItem Content="VP9" />
+                <ComboBoxItem Content="RAW"/>
+            </ComboBox>
+           
+            <TextBlock Text="Framerate:" 
+                       Margin="10"
+                       VerticalAlignment="Center"/>
+
+            <ComboBox Margin="10" Width="90" 
+                      SelectedValue="{Binding VideoFramerate, Mode=TwoWay}"
+                      SelectedValuePath="Content"
+                      IsReadOnly="True">
+                <ComboBoxItem Content="10" />
+                <ComboBoxItem Content="25" />
+                <ComboBoxItem Content="30" />
+                <ComboBoxItem Content="60" />
+            </ComboBox>
+
             <Button Content="Create timelapse" 
                     Command="{Binding CreateOutputVideoCommand}"
                     Margin="10" Width="220"/>
 
-            <ComboBox Margin="10" Width="100" 
-                      SelectedValue="{Binding VideoCodecString, Mode=TwoWay}"
-                      SelectedValuePath="Content">
-                <ComboBoxItem Content="VP9" />
-                <ComboBoxItem Content="RAW"/>
-            </ComboBox>
-            
+
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" Grid.Row="5" HorizontalAlignment="Center">

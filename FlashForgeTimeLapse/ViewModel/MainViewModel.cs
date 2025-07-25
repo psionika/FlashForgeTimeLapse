@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using FlashForgeTimeLapse.Helpers;
 using FlashForgeTimeLapse.MJpegWrapper;
+using FlashForgeTimeLapse.Properties;
 using FlashForgeTimeLapse.ThreadExecuters;
 using System;
 using System.Diagnostics;
@@ -71,19 +72,38 @@ namespace FlashForgeTimeLapse.ViewModel
             }
         }
 
+        private string _videoFramerate = "25";
+        public string VideoFramerate
+        {
+            get => _videoFramerate;
+            set
+            {
+                if (value != null && value != string.Empty &&
+                    value != _videoFramerate)
+                {
+                    _videoFramerate = value;
+                    OnPropertyChanged(nameof(VideoFramerate));
+                }
+            }
+        }
+
         public string TimeoutScreenshot
         {
-            get => Properties.Settings.Default.TimeoutScreenshot.ToString();
+            get => Settings.Default.TimeoutScreenshot.ToString();
             set
             {
                 if (value != null &&
                     value != string.Empty &&
-                    value != Properties.Settings.Default.TimeoutScreenshot.ToString())
+                    value != Settings.Default.TimeoutScreenshot.ToString())
                 {
                     try
                     {
-                        Properties.Settings.Default.TimeoutScreenshot = Convert.ToInt32(value);
-                        Properties.Settings.Default.Save();
+                        var temp = Convert.ToInt32(value);
+                        if (temp > 0)
+                        {
+                            Settings.Default.TimeoutScreenshot = temp;
+                            Settings.Default.Save();
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -159,6 +179,25 @@ namespace FlashForgeTimeLapse.ViewModel
         });
 
         public ICommand ClearFilesCommand => new RelayCommand(ClearFiles);
+
+        public ICommand TimeoutScreenshotUp => new RelayCommand(() =>
+        {
+            Settings.Default.TimeoutScreenshot = Settings.Default.TimeoutScreenshot + 1;
+            Settings.Default.Save();
+
+            OnPropertyChanged(nameof(TimeoutScreenshot));
+        });
+
+        public ICommand TimeoutScreenshotDown => new RelayCommand(() =>
+        {
+            if (Settings.Default.TimeoutScreenshot > 1)
+            {
+                Settings.Default.TimeoutScreenshot = Settings.Default.TimeoutScreenshot - 1;
+                Settings.Default.Save();
+            }
+
+            OnPropertyChanged(nameof(TimeoutScreenshot));
+        });
 
         #endregion Commands
 
@@ -260,7 +299,9 @@ namespace FlashForgeTimeLapse.ViewModel
                 {
                     VideoCodec videoCodec = VideoCodecString == "VP9" ? VideoCodec.VP9 : VideoCodec.Raw;
 
-                    writer.Open(Path.Combine(AppFolders.Exe, "output" + extension), 640, 480, 25, videoCodec);
+                    int framerate = Convert.ToInt32(VideoFramerate);   
+
+                    writer.Open(Path.Combine(AppFolders.Exe, "output" + extension), 640, 480, framerate, videoCodec);
 
                     foreach (string file in Directory.EnumerateFiles(AppFolders.Images, "*.png"))
                     {

@@ -115,9 +115,6 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection">
       <Version>9.0.7</Version>
     </PackageReference>
-    <PackageReference Include="NLog">
-      <Version>6.0.2</Version>
-    </PackageReference>
     <PackageReference Include="System.Drawing.Common">
       <Version>9.0.7</Version>
     </PackageReference>
