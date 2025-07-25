@@ -127,6 +127,17 @@ namespace FlashForgeTimeLapse.ViewModel
 
         #region Commands
 
+        public ICommand ReconnectVideoCommand => new RelayCommand(() => 
+        {
+            if (videoStreamCancellationToken != null)
+            {
+                videoStreamCancellationToken.Cancel();
+
+                Thread.Sleep(100);
+                Task.Run(() => StartVideoAsync());
+            }
+        });
+
         public ICommand CreateOutputVideoCommand => new RelayCommand(() =>
         {
             IsLoading = true;
@@ -153,6 +164,8 @@ namespace FlashForgeTimeLapse.ViewModel
 
         #region Constructor 
 
+        private CancellationTokenSource videoStreamCancellationToken = null;
+
         public MainViewModel()
         {
             Task.Run(() => StartVideoAsync());
@@ -167,6 +180,8 @@ namespace FlashForgeTimeLapse.ViewModel
         {
             using (var cts = new CancellationTokenSource())
             {
+                videoStreamCancellationToken = cts;
+
                 try
                 {
                     await SimpleMJPEGDecoder.StartAsync(
@@ -218,11 +233,11 @@ namespace FlashForgeTimeLapse.ViewModel
                 }
                 catch (OperationCanceledException ex)
                 {
-                    Debug.WriteLine("QQ " + ex);
+                    Debug.WriteLine("QQ OperationCanceledException " + ex);
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("QQ " + ex);
+                    Debug.WriteLine("QQ Exception " + ex);
                 }
             }
         }

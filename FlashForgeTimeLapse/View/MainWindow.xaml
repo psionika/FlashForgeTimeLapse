@@ -18,20 +18,37 @@
         </Grid.RowDefinitions>
 
         <StackPanel Orientation="Horizontal" Grid.Row="0">
-            <TextBlock Text="Stream URL:" Margin="10" VerticalAlignment="Center"/>
+            
+            <TextBlock Text="Stream URL:" 
+                       Margin="10"
+                       VerticalAlignment="Center"/>
+            
             <TextBox Text="{Binding StreamUrl}"
                      IsEnabled="{Binding IsStarting, Converter={StaticResource InverseBooleanConverter}}"
-                     Width="500" Margin="10"
+                     Width="437" Margin="10"
                      VerticalContentAlignment="Center"/>
+
+            <Button Content="Reconnect"
+                    Command="{Binding ReconnectVideoCommand}"
+                    IsEnabled="{Binding IsStarting, Converter={StaticResource InverseBooleanConverter}}"
+                    Margin="10" Width="100"  />
+
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" Grid.Row="1">
-            <TextBlock Text="Screenshot timeout:" Margin="10"  VerticalAlignment="Center"/>
+            
+            <TextBlock Text="Screenshot timeout:" 
+                       Margin="10"
+                       VerticalAlignment="Center"/>
+            
             <TextBox Text="{Binding TimeoutScreenshot}"
                      IsEnabled="{Binding IsStarting, Converter={StaticResource InverseBooleanConverter}}"
                      VerticalContentAlignment="Center"
                      Margin="10" Width="395" />
-            <TextBlock Text="seconds" Margin="10"  VerticalAlignment="Center"/>
+            
+            <TextBlock Text="seconds"
+                       Margin="10" VerticalAlignment="Center"/>
+            
         </StackPanel>
 
         <Image Source="{Binding ImageStream}"
